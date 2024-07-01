@@ -11,6 +11,8 @@
 
   let contentDiv: HTMLDivElement
 
+  let todoItemStyle: string
+
   const toggleItem = async (item: TodoItem) => {
     toggleTodoItem(item, app)
   }
@@ -30,11 +32,16 @@
     }
   }
   $: {
-    if (contentDiv) contentDiv.innerHTML = item.rawHTML
+    todoItemStyle = lookAndFeel;
+    if (contentDiv) contentDiv.innerHTML = item.rawHTML;
+    // Linkage with 'Tasks' plugin
+    if (item.rawHTML.contains('🔺')) todoItemStyle += ' important';
+    if (item.rawHTML.contains('🔼') || item.rawHTML.contains('⏫')) todoItemStyle += ' secondary';
+    if (item.rawHTML.contains('🔽') || item.rawHTML.contains('⏬')) todoItemStyle += ' unimportant';
   }
 </script>
 
-<li class={`${lookAndFeel}`}>
+<li class={`${todoItemStyle}`}>
   <button
     class="toggle"
     on:click={(ev) => {
@@ -83,5 +90,14 @@
   }
   .toggle:hover {
     opacity: 0.8;
+  }
+  .important {
+    background-color: #FFE4E1;
+  }
+  .secondary {
+    background-color: #FFF5EE;
+  }
+  .unimportant {
+    color: gray;
   }
 </style>
